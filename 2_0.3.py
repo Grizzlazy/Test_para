@@ -74,7 +74,7 @@ def Tabu_search(init_solution, tabu_tenure, CC, first_time, Data1, index_conside
 
     # BREAKLOOP = Data.number_of_cities
     SEGMENT = 100
-    END_SEGMENT =  int(Data.number_of_cities/math.log10(Data.number_of_cities)) * theta
+    END_SEGMENT =  int(Data.number_of_cities/math.log10(Data.number_of_cities) * theta)
     
     T = 0
     nei_set = [0, 1, 2, 3, 4]
