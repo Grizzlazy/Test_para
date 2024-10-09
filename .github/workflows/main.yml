@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        number_of_cities: [10]
+        number_of_cities: [30, 50]
         delta: [0.3, 0.6]
         alpha: ['[0.5, 0.3, 0.1]', '[0.3, 0.2, 0.1]']
-        end_segment: [50, 100, 150]
+        theta: [0.5, 1, 2]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,15 +28,36 @@ jobs:
         run: pip install -r requirements.txt
         
       - name: Run main.py
-        run: python 1_0.3.py
+        run: python 2_0.3.py
         env:
           NUMBER_OF_CITIES: ${{ matrix.number_of_cities }}
           DELTA: ${{ matrix.delta }}
           ALPHA: ${{ matrix.alpha }}
           END_SEGMENT: ${{ matrix.end_segment }}
-      
+
       - name: Upload result Excel file as artifact
         uses: actions/upload-artifact@v4
         with:
           name: excel-results-${{ matrix.number_of_cities }}-${{ matrix.delta }}-${{ matrix.alpha }}-${{ matrix.end_segment }}
-          path: Result/excel_result/Random_${{ matrix.number_of_cities }}_${{ matrix.delta }}_${{ matrix.alpha}}_${{ matrix.end_segment }}_CL1.xlsx
+          path: Random_*_CL1.xlsx
+
+  summary:
+    name: Summary results
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          merge-multiple: true
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: excel-results-summary
+          path: Random_*_CL1.xlsx
