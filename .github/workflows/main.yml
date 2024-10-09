@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: excel-results-${{ matrix.number_of_cities }}-${{ matrix.delta }}-${{ matrix.alpha }}-${{ matrix.end_segment }}
-          path: Random_*_CL1.xlsx
+          path: Random_*_CL2.xlsx
 
   summary:
     name: Summary results
@@ -60,4 +60,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: excel-results-summary
-          path: Random_*_CL1.xlsx
+          path: Random_*_CL2.xlsx
