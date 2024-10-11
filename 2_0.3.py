@@ -38,7 +38,7 @@ number_of_cities = int(os.getenv('NUMBER_OF_CITIES', '50'))
 delta = float(os.getenv('DELTA', '0.3'))
 alpha = json.loads(os.getenv('ALPHA', '[0.5, 0.3, 0.1]'))
 theta = float(os.getenv('theta', '0.5'))
-
+data_set = os.getenv('dataset', "C101_0.5.dat")
 solution_pack_len = 0
 def roulette_wheel_selection(population, fitness_scores):
     total_fitness = sum(fitness_scores)
@@ -269,7 +269,7 @@ def Tabu_search(init_solution, tabu_tenure, CC, first_time, Data1, index_conside
             current_fitness = current_neighborhood[index_best_nei][1][index[index_best_nei]][1][0]
             current_truck_time = current_neighborhood[index_best_nei][1][index[index_best_nei]][1][1]
             current_sum_fitness = current_neighborhood[index_best_nei][1][index[index_best_nei]][1][2]
-            print(current_fitness, current_sol)
+            # print(current_fitness, current_sol)
             Data1.append(current_fitness)
             Data1.append(current_sol)
             # SET_LAST_10.append([current_sol, [current_fitness, current_truck_time]])
@@ -328,10 +328,10 @@ def Tabu_search(init_solution, tabu_tenure, CC, first_time, Data1, index_conside
                 i = 0
             else:
                 i += 1
-        print("-------",T,"--------")
-        print(best_fitness)
-        print(T, best_sol, "\n", best_fitness)
-        print(used, score, sum(used))
+        # print("-------",T,"--------")
+        # print(best_fitness)
+        # print(T, best_sol, "\n", best_fitness)
+        # print(used, score, sum(used))
 
         T += 1
         # if best_fitness - prev_f < epsilon:
@@ -375,11 +375,11 @@ def Tabu_search_for_CVRP(CC):
     # print(Function.Check_if_feasible(best_sol))
     best_sol, best_fitness, result_print, solution_pack, Data1 = Tabu_search(init_solution=current_sol, tabu_tenure=Data.number_of_cities-1, CC=CC, first_time=True, Data1=Data1, index_consider_elite_set=0)
     for pi in range(solution_pack_len):
-        print("+++++++++++++++++++++++++",len(solution_pack),"+++++++++++++++++++++++++",)
-        for iiii in range(len(solution_pack)):
-            print(solution_pack[iiii][0])
-            print(solution_pack[iiii][1][0])
-            print("$$$$$$$$$$$$$$")
+        # print("+++++++++++++++++++++++++",len(solution_pack),"+++++++++++++++++++++++++",)
+        # for iiii in range(len(solution_pack)):
+        #     print(solution_pack[iiii][0])
+        #     print(solution_pack[iiii][1][0])
+        #     print("$$$$$$$$$$$$$$")
         if pi < len(solution_pack):
             current_neighborhood5 = Neighborhood.swap_two_array(solution_pack[pi][0])
             best_sol_in_brnei = current_neighborhood5[0][0]
@@ -392,9 +392,9 @@ def Tabu_search_for_CVRP(CC):
             temp = ["break", "break", "break", "break", "break", "break", "break"]
             Data1.append(temp)
             best_sol1, best_fitness1, result_print1, solution_pack1, Data1 = Tabu_search(init_solution=best_sol_in_brnei, tabu_tenure=Data.number_of_cities-1, CC=CC, first_time=False, Data1=Data1, index_consider_elite_set=pi+1)
-            print("-----------------", pi, "------------------------")
-            print(best_sol1)
-            print(best_fitness1)
+            # print("-----------------", pi, "------------------------")
+            # print(best_sol1)
+            # print(best_fitness1)
             if best_fitness1 - best_fitness < epsilon:
                 best_sol = best_sol1
                 best_fitness = best_fitness1
@@ -411,9 +411,7 @@ folder_path = "test_data/data_demand_random/"+str(number_of_cities)
 # folder_path = "test_data\\Smith\\TSPrd(time)\\Solomon\\15"
 
 # Tìm các file với đuôi là 0.5.dat, 2.dat hoặc 3.dat
-txt_files = glob.glob(os.path.join(folder_path, "*0.5.dat")) + \
-            glob.glob(os.path.join(folder_path, "*2.dat")) + \
-            glob.glob(os.path.join(folder_path, "*3.dat"))
+txt_files = glob.glob(os.path.join(folder_path, data_set))
 
 # txt_files = ["test_data\\Smith\\TSPrd(time)\\Solomon\\15\\RC101_1.dat", "test_data\\Smith\\TSPrd(time)\\Solomon\\15\\RC101_2.5.dat", "test_data\\Smith\\TSPrd(time)\\Solomon\\15\\RC101_2.dat", "test_data\\Smith\\TSPrd(time)\\Solomon\\15\\RC101_3.dat"]
 # Tạo một tệp Excel mới
@@ -470,10 +468,10 @@ for txt_file in txt_files:
             if i == ITE - 1:
                 sheet.cell(row=row, column=column, value=avg_run_time)
                 sheet.cell(row=row, column=column+1, value=str(best_csv_sol))
-            workbook.save(f"Random_{number_of_cities}_{delta}_{alpha}_{theta}_CL2.xlsx")
+            workbook.save(f"Random_{data_set}_{number_of_cities}_{delta}_{alpha}_{theta}_CL2.xlsx")
         # Tăng dòng cho lần chạy tiếp theo
         row += 1
-        log_file.close()
+        # log_file.close()
 
 workbook.close()
 
