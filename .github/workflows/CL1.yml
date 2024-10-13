@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        number_of_cities: [30]
+        number_of_cities: [50]
         delta: [0.3, 0.6]
         alpha: ['[0.5, 0.3, 0.1]', '[0.3, 0.2, 0.1]']
-        theta: [0.5, 1, 2]
+        end_segment: [50, 100, 150]
         data_set: ["C101_0.5.dat", "C101_2.dat", "C101_3.dat", "C201_0.5.dat", "C201_2.dat", "C201_3.dat", "R101_0.5.dat", "R101_2.dat", "R101_3.dat", "RC101_0.5.dat", "RC101_2.dat", "RC101_3.dat"]
     steps:
       - name: Checkout repository
@@ -28,20 +28,19 @@ jobs:
       - name: Install requirements
         run: pip install -r requirements.txt
         
-      - name: Run main.py
-        run: python 2_0.3.py
+      - name: Run main.py ITE-1
+        run: python 1_0.3.py
         env:
           NUMBER_OF_CITIES: ${{ matrix.number_of_cities }}
           DELTA: ${{ matrix.delta }}
           ALPHA: ${{ matrix.alpha }}
-          theta: ${{ matrix.theta }}
+          END_SEGMENT: ${{ matrix.end_segment }}
           DATA_SET: ${{ matrix.data_set }}
-
       - name: Upload result Excel file as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: excel-results-${{ matrix.number_of_cities }}-${{ matrix.delta }}-${{ matrix.alpha }}-${{ matrix.theta }}-${{ matrix.data_set }}
-          path: Random_*_CL2.xlsx
+          name: excel-results-${{ matrix.number_of_cities }}-${{ matrix.delta }}-${{ matrix.alpha }}-${{ matrix.end_segment }}-${{ matrix.data_set }}  # Thêm iteration vào tên file
+          path: Random_*_CL1.xlsx
 
   summary:
     name: Summary results
@@ -62,4 +61,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: excel-results-summary
-          path: Random_*_CL2.xlsx
+          path: Random_*_CL1.xlsx
