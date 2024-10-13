@@ -38,7 +38,7 @@ number_of_cities = int(os.getenv('NUMBER_OF_CITIES', '50'))
 delta = float(os.getenv('DELTA', '0.3'))
 alpha = json.loads(os.getenv('ALPHA', '[0.5, 0.3, 0.1]'))
 theta = float(os.getenv('theta', '0.5'))
-data_set = os.getenv('dataset', "C101_0.5.dat")
+data_set = os.getenv('data_set', "C101_0.5.dat")
 solution_pack_len = 0
 def roulette_wheel_selection(population, fitness_scores):
     total_fitness = sum(fitness_scores)
