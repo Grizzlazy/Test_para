@@ -33,13 +33,14 @@ epsilon = (-1) * 0.00001
 LOOP_IMPROVED = 0
 SET_LAST_10 = [] 
 BEST = []
-number_of_cities = int(os.getenv('NUMBER_OF_CITIES', '10')) 
+number_of_cities = int(os.getenv('NUMBER_OF_CITIES', '30')) 
 delta = float(os.getenv('DELTA', '0.3'))
 alpha = json.loads(os.getenv('ALPHA', '[0.5, 0.3, 0.1]'))
 END_SEGMENT = int(os.getenv('END_SEGMENT', '100'))
-
+data_set = os.getenv('DATA_SET', 'C101_0.5.dat')
 SEGMENT = 100
 solution_pack_len = 0
+TIME_LIMIT = 20000
 def roulette_wheel_selection(population, fitness_scores):
     total_fitness = sum(fitness_scores)
     probabilities = [score / total_fitness for score in fitness_scores]
@@ -81,6 +82,9 @@ def Tabu_search(init_solution, tabu_tenure, CC, first_time, Data1, index_conside
     current_sol = init_solution
     
     while T < SEGMENT:
+        end_time = time.time()
+        if end_time - start_time > TIME_LIMIT:
+            break
         tabu_tenure = tabu_tenure1 = tabu_tenure3 = tabu_tenure2 = random.uniform(2*math.log(Data.number_of_cities), Data.number_of_cities)
         Tabu_Structure = [(tabu_tenure +1) * (-1)] * Data.number_of_cities
         Tabu_Structure1 = [(tabu_tenure +1) * (-1)] * Data.number_of_cities
@@ -407,15 +411,17 @@ def Tabu_search_for_CVRP(CC):
 
 # Thư mục chứa các file .txt
 folder_path = "test_data/data_demand_random/"+str(number_of_cities)
-# folder_path = "test_data\\Smith\\TSPrd(time)\\Solomon\\50\\0_5TSP_50"
-# folder_path = "test_data\\Smith\\TSPrd(time)\\Solomon\\15"
+# folder_path = "test_data/Smith/TSPrd(time)/Solomon/50/0_5TSP_50"
+# folder_path = "test_data/Smith/TSPrd(time)/Solomon/15"
 
 # Danh sách tất cả các file .txt trong thư mục
-txt_files = glob.glob(os.path.join(folder_path, "C101_0.5.dat"))
-            # glob.glob(os.path.join(folder_path, "*2.dat")) + \
-            # glob.glob(os.path.join(folder_path, "*3.dat"))
-# txt_files = ["test_data\\Smith\\TSPrd(time)\\Solomon\\15\\RC101_1.dat", "test_data\\Smith\\TSPrd(time)\\Solomon\\15\\RC101_2.5.dat", "test_data\\Smith\\TSPrd(time)\\Solomon\\15\\RC101_2.dat", "test_data\\Smith\\TSPrd(time)\\Solomon\\15\\RC101_3.dat"]
+# txt_files = glob.glob(os.path.join(folder_path, "*0.5.dat")) + \
+#             glob.glob(os.path.join(folder_path, "*2.dat")) + \
+#             glob.glob(os.path.join(folder_path, "*3.dat"))
+# txt_files = ['test_data/data_demand_random/30/C101_0.5.dat', 'test_data/data_demand_random/30/C201_0.5.dat', 'test_data/data_demand_random/30/R101_0.5.dat', 'test_data/data_demand_random/30/RC101_0.5.dat', 'test_data/data_demand_random/30/C101_2.dat', 'test_data/data_demand_random/30/C201_2.dat', 'test_data/data_demand_random/30/R101_2.dat', 'test_data/data_demand_random/30/RC101_2.dat', 'test_data/data_demand_random/30/C101_3.dat', 'test_data/data_demand_random/30/C201_3.dat', 'test_data/data_demand_random/30/R101_3.dat', 'test_data/data_demand_random/30/RC101_3.dat']
+# txt_files = ["test_data/Smith/TSPrd(time)/Solomon/15/RC101_1.dat", "test_data/Smith/TSPrd(time)/Solomon/15/RC101_2.5.dat", "test_data/Smith/TSPrd(time)/Solomon/15/RC101_2.dat", "test_data/Smith/TSPrd(time)/Solomon/15/RC101_3.dat"]
 # Tạo một tệp Excel mới
+txt_files = glob.glob(os.path.join(folder_path, data_set))
 workbook = openpyxl.Workbook()
 sheet = workbook.active
 
@@ -447,12 +453,12 @@ for txt_file in txt_files:
         best_csv_fitness = 1000000
         for i in range(ITE):
             BEST = []
-            # print("------------------------",i,"------------------------")
+            print("------------------------",i,"------------------------")
             start_time = time.time()
             best_fitness, best_sol = Tabu_search_for_CVRP(1)
-            # print("---------- RESULT ----------")
-            # print(best_sol)
-            # print(best_fitness)
+            print("---------- RESULT ----------")
+            print(best_sol)
+            print(best_fitness)
             avg += best_fitness/ITE
             result.append(best_fitness)
             # print(Function.Check_if_feasible(best_sol))
@@ -471,8 +477,7 @@ for txt_file in txt_files:
                 sheet.cell(row=row, column=column+1, value=str(best_csv_sol))    
         # Tăng dòng cho lần chạy tiếp theo
         row += 1
-    workbook.save(f"Result/excel_result/Random_{number_of_cities}_{delta}_{alpha}_{END_SEGMENT}_CL1.xlsx")
+    workbook.save(f"Random_{data_set}_{number_of_cities}_{delta}_{alpha}_{END_SEGMENT}_CL1.xlsx")
         # log_file.close()
 
 workbook.close()
-
